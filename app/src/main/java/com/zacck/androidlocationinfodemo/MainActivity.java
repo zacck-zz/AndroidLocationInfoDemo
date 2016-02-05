@@ -55,40 +55,37 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             return;
         }
         Location now = mLocationManager.getLastKnownLocation(mLocationProvider);
-        if(now != null)
-        {
+        if (now != null) {
             onLocationChanged(now);
         }
-       
+
     }
 
     @Override
     public void onLocationChanged(Location location) {
         //lets provide the info
-        tvAccuracy.setText(tvAccuracy.getText().toString() +" "+String.valueOf(location.getAccuracy()));
-        tvBearing.setText(tvBearing.getText().toString() +" "+String.valueOf(location.getBearing()));
-        tvAlt.setText(tvAlt.getText().toString() +" "+String.valueOf(location.getAltitude()));
-        tvLong.setText(tvLong.getText().toString() +" "+String.valueOf(location.getLongitude()));
-        tvLat.setText(tvLat.getText().toString() +" "+String.valueOf(location.getLatitude()));
-        tvSpeed.setText(tvSpeed.getText().toString() +" "+String.valueOf(location.getSpeed()));
+        tvAccuracy.setText("Accuracy: " + String.valueOf(location.getAccuracy()));
+        tvBearing.setText("Bearing: "+ String.valueOf(location.getBearing()));
+        tvAlt.setText("Altitude: "+ String.valueOf(location.getAltitude()));
+        tvLong.setText("Longitude: " + String.valueOf(location.getLongitude()));
+        tvLat.setText("Latitude: "+ String.valueOf(location.getLatitude()));
+        tvSpeed.setText("Speed: "+ String.valueOf(location.getSpeed()));
 
         //use a Geo coder to get the first address
         Geocoder mGeocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
         try {
 
-            List<Address> listAddresses = mGeocoder.getFromLocation(location.getLatitude(),location.getLongitude(), 1);
+            List<Address> listAddresses = mGeocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
 
-            if(listAddresses != null && listAddresses.size() >0)
-            {
+            if (listAddresses != null && listAddresses.size() > 0) {
                 //Toast.makeText(getApplicationContext(),listAddresses.get(0).toString(),Toast.LENGTH_LONG).show();
-                tvAddress.setText(tvAddress.getText().toString()+"\r\n"+listAddresses.get(0).toString());
+                tvAddress.setText("Address: " + "\r\n" + listAddresses.get(0).toString());
 
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
 
     }
@@ -106,5 +103,39 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    //implement onpause and onresume for better resource usage
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mLocationManager.removeUpdates(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mLocationManager.requestLocationUpdates(mLocationProvider, 400, 1, this);
     }
 }
