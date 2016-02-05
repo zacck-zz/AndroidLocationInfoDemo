@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
             if (listAddresses != null && listAddresses.size() > 0) {
                 //Toast.makeText(getApplicationContext(),listAddresses.get(0).toString(),Toast.LENGTH_LONG).show();
-                tvAddress.setText("Address: " + "\r\n" + listAddresses.get(0).toString());
+                tvAddress.setText("Address: " + "\r\n" + listAddresses.get(0).getAddressLine(0));
 
             }
         } catch (Exception e) {
