@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         tvAlt.setText("Altitude: "+ String.valueOf(location.getAltitude()));
         tvLong.setText("Longitude: " + String.valueOf(location.getLongitude()));
         tvLat.setText("Latitude: "+ String.valueOf(location.getLatitude()));
-        tvSpeed.setText("Speed: "+ String.valueOf(location.getSpeed()));
+        tvSpeed.setText("Speed: "+ String.valueOf(location.getSpeed()+"m/s"));
 
         //use a Geo coder to get the first address
         Geocoder mGeocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
@@ -80,7 +80,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
             if (listAddresses != null && listAddresses.size() > 0) {
                 //Toast.makeText(getApplicationContext(),listAddresses.get(0).toString(),Toast.LENGTH_LONG).show();
-                tvAddress.setText("Address: " + "\r\n" + listAddresses.get(0).getAddressLine(0));
+                String AddressHolder = "";
+                for(int i = 0; i<=listAddresses.get(0).getMaxAddressLineIndex(); i++)
+                {
+                   AddressHolder += listAddresses.get(0).getAddressLine(i)+"\n";
+                }
+                tvAddress.setText("Address: " + "\r\n" + AddressHolder);
 
             }
         } catch (Exception e) {
